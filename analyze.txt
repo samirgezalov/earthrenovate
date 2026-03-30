@@ -1,0 +1,40 @@
+Analyzing renovation...                                         
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\theme\app_theme.dart:28:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\theme\app_theme.dart:47:27 - deprecated_member_use
+   info - 'dart:html' is deprecated and shouldn't be used. Use package:web and dart:js_interop instead - lib\core\utils\web_lifecycle_manager.dart:1:1 - deprecated_member_use
+   info - Don't use web-only libraries outside Flutter web plugins - lib\core\utils\web_lifecycle_manager.dart:1:1 - avoid_web_libraries_in_flutter
+warning - The value of the field '_localExternalUserId' isn't used - lib\data\services\metered_meeting_service.dart:16:11 - unused_field
+warning - The value of the field '_onParticipantJoined' isn't used - lib\data\services\metered_meeting_service.dart:21:26 - unused_field
+warning - The value of the field '_onParticipantLeft' isn't used - lib\data\services\metered_meeting_service.dart:22:21 - unused_field
+  error - Classes can only extend other classes - lib\presentation\providers\room_provider.dart:40:28 - extends_non_class
+  error - Too many positional arguments: 0 expected, but 1 found - lib\presentation\providers\room_provider.dart:43:46 - extra_positional_arguments
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:46:5 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:46:13 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:50:5 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:50:13 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:56:11 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:56:19 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:56:52 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:59:11 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:59:19 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:60:27 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:76:11 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:76:19 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:77:49 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:81:11 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:81:19 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:84:7 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:84:15 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:86:7 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:86:15 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:95:19 - undefined_identifier
+  error - Undefined name 'state' - lib\presentation\providers\room_provider.dart:98:5 - undefined_identifier
+  error - The function 'StateNotifierProvider' isn't defined - lib\presentation\providers\room_provider.dart:102:22 - undefined_function
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\login_screen.dart:34:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\login_screen.dart:39:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\login_screen.dart:93:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\login_screen.dart:95:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widgets\video_view_card.dart:31:37 - deprecated_member_use
+  error - The name 'MyApp' isn't a class - test\widget_test.dart:16:35 - creation_with_non_type
+

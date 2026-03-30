@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SOS App (Web)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define=METERED_KEY=f2a4177ef4e2f72ef5fcc595ed928eeb994d",
+        "--dart-define=METERED_DOMAIN=testingapp123.metered.live",
+        "--dart-define=METERED_ROOM_ID=testroom11111"
+      ]
+    },
+    {
+      "name": "SOS App (Prod Keys)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define=METERED_KEY=691786a258f0b5bcf12c0df7",
+        "--dart-define=METERED_DOMAIN=global.relay.metered.ca",
+        "--dart-define=METERED_ROOM_ID=voice-room-123",
+        "--dart-define=METERED_SECRET=voGvng+zCH8yWQ69"
+      ]
+    }
+  ]
+}
