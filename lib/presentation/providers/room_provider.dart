@@ -24,6 +24,7 @@ class RoomState {
   final bool inRoom;
   final bool isMicOn;
   final bool isCameraOn;
+  final bool isScreenSharing;
 
   RoomState({
     this.isJoining = false,
@@ -33,6 +34,7 @@ class RoomState {
     this.inRoom = false,
     this.isMicOn = true,
     this.isCameraOn = true,
+    this.isScreenSharing = false,
   });
 
   RoomState copyWith({
@@ -43,6 +45,7 @@ class RoomState {
     bool? inRoom,
     bool? isMicOn,
     bool? isCameraOn,
+    bool? isScreenSharing,
     bool clearError = false,
   }) {
     return RoomState(
@@ -53,6 +56,7 @@ class RoomState {
       inRoom: inRoom ?? this.inRoom,
       isMicOn: isMicOn ?? this.isMicOn,
       isCameraOn: isCameraOn ?? this.isCameraOn,
+      isScreenSharing: isScreenSharing ?? this.isScreenSharing,
     );
   }
 }
@@ -91,7 +95,14 @@ class RoomNotifier extends Notifier<RoomState> {
         nickname,
         roomId,
         onParticipantJoined: (p) {
-          state = state.copyWith(participants: [...state.participants, p]);
+          final participants = [...state.participants];
+          final index = participants.indexWhere((existing) => existing.externalUserId == p.externalUserId);
+          if (index != -1) {
+            participants[index] = p;
+          } else {
+            participants.add(p);
+          }
+          state = state.copyWith(participants: participants);
         },
         onParticipantLeft: (id) {
           state = state.copyWith(
@@ -160,6 +171,35 @@ class RoomNotifier extends Notifier<RoomState> {
       track.enabled = newState;
     });
     state = state.copyWith(isCameraOn: newState);
+  }
+
+  Future<void> toggleScreenShare() async {
+    if (state.isScreenSharing) {
+      await _meetingService.stopScreenShare();
+      state = state.copyWith(
+        isScreenSharing: false,
+        participants: state.participants.where((p) => p.externalUserId != 'screen').toList(),
+      );
+    } else {
+      await _meetingService.startScreenShare((stream) async {
+        final renderer = RTCVideoRenderer();
+        await renderer.initialize();
+        renderer.srcObject = stream;
+        
+        final screenParticipant = Participant(
+          externalUserId: 'screen',
+          name: 'Your Screen',
+          isLocal: true,
+          renderer: renderer,
+          stream: stream,
+        );
+        
+        state = state.copyWith(
+          isScreenSharing: true,
+          participants: [...state.participants, screenParticipant],
+        );
+      });
+    }
   }
 
   Future<void> leaveRoom() async {

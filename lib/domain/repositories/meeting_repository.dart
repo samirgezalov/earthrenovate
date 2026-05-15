@@ -12,5 +12,7 @@ abstract class MeetingRepository {
   });
   
   Future<void> leave();
+  Future<void> startScreenShare(Function(MediaStream) onStream);
+  Future<void> stopScreenShare();
   Future<void> dispose();
 }
