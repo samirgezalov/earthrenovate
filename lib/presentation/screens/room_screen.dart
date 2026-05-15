@@ -49,8 +49,10 @@ class _RoomScreenState extends ConsumerState<RoomScreen> {
             child: RoomControls(
               isMicOn: roomState.isMicOn,
               isCameraOn: roomState.isCameraOn,
+              isScreenSharing: roomState.isScreenSharing,
               onToggleMic: ref.read(roomProvider.notifier).toggleMic,
               onToggleCamera: ref.read(roomProvider.notifier).toggleCamera,
+              onToggleScreenShare: ref.read(roomProvider.notifier).toggleScreenShare,
               onLeave: () {
                 ref.read(roomProvider.notifier).leaveRoom();
                 Navigator.of(context).pop();

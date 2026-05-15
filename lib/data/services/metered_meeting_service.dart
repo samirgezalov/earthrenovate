@@ -16,10 +16,14 @@ class MeteredMeetingService implements MeetingRepository {
 
   RTCPeerConnection? _peerConnection;
   MediaStream? _localStream;
+  MediaStream? _screenStream;
   Function(MediaStream)? _onLocalStream;
   Function(Exception)? _onError;
   
   String? _sessionId;
+  final Map<String, String> _trackIdToSessionId = {};
+  final Map<String, String> _sessionIdToNickname = {};
+  final Map<String, Participant> _sessionIdToParticipant = {};
 
   @override
   Future<void> join(
@@ -51,7 +55,9 @@ class MeteredMeetingService implements MeetingRepository {
   final Map<String, String> _trackIdToNickname = {};
 
   Future<void> _joinSFU(String nickname, String roomId, Function(Participant) onJoined) async {
+    final iceServers = await _fetchMeteredIceServers();
     final configuration = <String, dynamic>{
+      'iceServers': iceServers,
       'sdpSemantics': 'unified-plan',
     };
 
@@ -59,19 +65,40 @@ class MeteredMeetingService implements MeetingRepository {
     
     _peerConnection!.onTrack = (RTCTrackEvent event) {
       final trackId = event.track.id;
-      final nick = _trackIdToNickname[trackId] ?? 'Remote User';
+      final sessionId = _trackIdToSessionId[trackId];
       
-      final participant = Participant(
-        externalUserId: trackId ?? 'unknown_${DateTime.now().millisecondsSinceEpoch}',
-        name: nick,
-        renderer: RTCVideoRenderer(),
-        stream: event.streams[0],
-      );
+      if (sessionId == null) return;
+
+      final nick = _sessionIdToNickname[sessionId] ?? 'Remote User';
       
-      participant.renderer.initialize().then((_) {
-        participant.renderer.srcObject = event.streams[0];
+      // Screen shares should be separate participants
+      final bool isScreen = nick.contains("Screen Share");
+      final String participantId = isScreen ? trackId ?? '' : sessionId;
+      
+      Participant? participant = _sessionIdToParticipant[participantId];
+      
+      if (participant == null) {
+        final stream = event.streams.isNotEmpty ? event.streams[0] : null;
+        
+        final newParticipant = Participant(
+          externalUserId: participantId,
+          name: nick,
+          renderer: RTCVideoRenderer(),
+          stream: stream,
+        );
+        
+        _sessionIdToParticipant[participantId] = newParticipant;
+        
+        newParticipant.renderer.initialize().then((_) {
+          newParticipant.renderer.srcObject = stream;
+          onJoined(newParticipant);
+        });
+      } else {
+        if (participant.stream != null && !participant.stream!.getTracks().any((t) => t.id == trackId)) {
+          participant.stream!.addTrack(event.track);
+        }
         onJoined(participant);
-      });
+      }
     };
 
     // Setup local media
@@ -116,6 +143,11 @@ class MeteredMeetingService implements MeetingRepository {
     
     final answer = RTCSessionDescription(sdpData['sdp'], 'answer');
     await _peerConnection!.setRemoteDescription(answer);
+
+    // 2. Publish tracks with names
+    for (var track in _localStream!.getTracks()) {
+      await _publishTrack(track, nickname);
+    }
 
     // 3. Start track polling
     _startRemoteTrackPolling(roomId, onJoined);
@@ -166,9 +198,13 @@ class MeteredMeetingService implements MeetingRepository {
           for (var trackInfo in tracks) {
             final trackId = trackInfo['trackId'];
             final participantName = trackInfo['customTrackName'] ?? 'Remote User';
+            final remoteSessionId = trackInfo['sessionId'];
+            final kind = trackInfo['type'] ?? 'video'; // Metered uses 'type' for audio/video
             
-            if (!_subscribedTracks.contains(trackId) && trackInfo['sessionId'] != _sessionId) {
-              await _subscribeToTrack(trackId, participantName, onJoined);
+            if (!_subscribedTracks.contains(trackId) && remoteSessionId != _sessionId) {
+              _trackIdToSessionId[trackId] = remoteSessionId;
+              _sessionIdToNickname[remoteSessionId] = participantName;
+              await _subscribeToTrack(trackId, participantName, kind, onJoined);
             }
           }
         }
@@ -178,8 +214,14 @@ class MeteredMeetingService implements MeetingRepository {
     });
   }
 
-  Future<void> _subscribeToTrack(String trackId, String nickname, Function(Participant) onJoined) async {
+  Future<void> _subscribeToTrack(String trackId, String nickname, String kind, Function(Participant) onJoined) async {
     _subscribedTracks.add(trackId);
+    
+    // Ensure transceiver exists for the kind
+    await _peerConnection!.addTransceiver(
+      kind: kind == 'audio' ? RTCRtpMediaType.RTCRtpMediaTypeAudio : RTCRtpMediaType.RTCRtpMediaTypeVideo,
+      init: RTCRtpTransceiverInit(direction: TransceiverDirection.RecvOnly),
+    );
     
     final offer = await _peerConnection!.createOffer();
     await _peerConnection!.setLocalDescription(offer);
@@ -236,6 +278,30 @@ class MeteredMeetingService implements MeetingRepository {
   }
 
   @override
+  Future<void> startScreenShare(Function(MediaStream) onStream) async {
+    try {
+      _screenStream = await navigator.mediaDevices.getDisplayMedia({
+        'video': true,
+        'audio': true,
+      });
+      
+      for (var track in _screenStream!.getTracks()) {
+        await _peerConnection!.addTrack(track, _screenStream!);
+        await _publishTrack(track, "Screen Share");
+      }
+      onStream(_screenStream!);
+    } catch (e) {
+      print("Screen share error: $e");
+    }
+  }
+
+  @override
+  Future<void> stopScreenShare() async {
+    _screenStream?.getTracks().forEach((track) => track.stop());
+    _screenStream = null;
+  }
+
+  @override
   Future<void> leave() async => dispose();
 
   @override
@@ -249,5 +315,8 @@ class MeteredMeetingService implements MeetingRepository {
     await _peerConnection?.close();
     _peerConnection = null;
     _localStream = null;
+    _trackIdToSessionId.clear();
+    _sessionIdToNickname.clear();
+    _sessionIdToParticipant.clear();
   }
 }

@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../core/theme/app_theme.dart';
 
 class RoomControls extends StatelessWidget {
   final bool isMicOn;
   final bool isCameraOn;
+  final bool isScreenSharing;
   final VoidCallback onToggleMic;
   final VoidCallback onToggleCamera;
+  final VoidCallback onToggleScreenShare;
   final VoidCallback onLeave;
 
   const RoomControls({
     super.key,
     required this.isMicOn,
     required this.isCameraOn,
+    required this.isScreenSharing,
     required this.onToggleMic,
     required this.onToggleCamera,
+    required this.onToggleScreenShare,
     required this.onLeave,
   });
 
@@ -45,6 +50,12 @@ class RoomControls extends StatelessWidget {
               icon: isCameraOn ? LucideIcons.video : LucideIcons.videoOff,
               color: isCameraOn ? Colors.white24 : Colors.redAccent.withAlpha(128),
               onPressed: onToggleCamera,
+            ),
+            const SizedBox(width: 20),
+            _ControlButton(
+              icon: isScreenSharing ? LucideIcons.screenShareOff : LucideIcons.screenShare,
+              color: isScreenSharing ? AppTheme.accent.withAlpha(128) : Colors.white24,
+              onPressed: onToggleScreenShare,
             ),
             const SizedBox(width: 40),
             _ControlButton(
