@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "SOS App (Web)",
+      "name": "Renovate App (Web)",
       "request": "launch",
       "type": "dart",
       "args": [
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "name": "SOS App (Prod Keys)",
+      "name": "Renovate App (Prod Keys)",
       "request": "launch",
       "type": "dart",
       "args": [

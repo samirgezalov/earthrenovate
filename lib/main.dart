@@ -22,13 +22,13 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: SOSEarthApp(),
+      child: RenovateEarthApp(),
     ),
   );
 }
 
-class SOSEarthApp extends ConsumerWidget {
-  const SOSEarthApp({super.key});
+class RenovateEarthApp extends ConsumerWidget {
+  const RenovateEarthApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

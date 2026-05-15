@@ -13,7 +13,7 @@ import 'package:renovation/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const ProviderScope(child: SOSEarthApp()));
+    await tester.pumpWidget(const ProviderScope(child: RenovateEarthApp()));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
