@@ -11,8 +11,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await Supabase.initialize(
-    url: 'https://ckoynmulxrrtkhmyvmhd.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrb3lubXVseHJydGtobXl2bWhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NDEyMTUsImV4cCI6MjA3ODExNzIxNX0.viqmVz-FzgT3ECs8sI0d_ijmXea8BtwVlf5uZfnxBPc',
+    url: const String.fromEnvironment('SUPABASE_URL',),
+    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY', ),
   );
 
   // Ensure we have a session for Realtime/RLS
@@ -22,20 +22,20 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: SOSEarthApp(),
+      child: RenovateEarthApp(),
     ),
   );
 }
 
-class SOSEarthApp extends ConsumerWidget {
-  const SOSEarthApp({super.key});
+class RenovateEarthApp extends ConsumerWidget {
+  const RenovateEarthApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inRoom = ref.watch(roomProvider.select((state) => state.inRoom));
 
     return MaterialApp(
-      title: 'S.O.S. Web Conference',
+      title: 'Web Conference',
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       home: inRoom ? const RoomScreen() : const LoginScreen(),

@@ -51,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const Icon(LucideIcons.globe2, size: 64, color: AppTheme.accent),
               const SizedBox(height: 16),
               const Text(
-                'S.O.S. Earth Renovation',
+                'Earth Renovation',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
